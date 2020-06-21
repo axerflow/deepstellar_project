@@ -1,0 +1,618 @@
+<style type="text/css" media="all">
+IMG {
+	PADDING-RIGHT: 0px;
+	PADDING-LEFT: 0px;
+	FLOAT: right;
+	PADDING-BOTTOM: 0px;
+	PADDING-TOP: 0px
+}
+
+#primarycontent {
+	MARGIN-LEFT: auto;;
+	WIDTH: expression(document.body.clientWidth > 
+ 1000 ? "1000px" : "auto");
+	MARGIN-RIGHT: auto;
+	TEXT-ALIGN: left;
+	max-width: 1000px
+}
+
+BODY {
+	TEXT-ALIGN: center
+}
+</style>
+
+
+		<center>
+			<h1>DeepStellar: Model-Based Quantitative Analysis of Stateful
+				Deep Learning Systems</h1>
+		</center>
+		<center>
+			<h2>
+				<a href="https://www.ntu.edu.sg/home/yangliu/team.html">Xiaoning
+					Du</a>*&nbsp;&nbsp;&nbsp; <a
+					href="https://xiaofeixie.bitbucket.io/publications/">Xiaofei
+					Xie</a>&nbsp;&nbsp;&nbsp; <a href="https://www.ntu.edu.sg/home/yi_li/">Yi
+					Li</a>&nbsp;&nbsp;&nbsp; <a href="https://malei.xyz/">Lei Ma</a>*&nbsp;&nbsp;&nbsp;
+				<a href="https://www.ntu.edu.sg/home/yangliu/team.html">Yang Liu</a>&nbsp;&nbsp;&nbsp;
+				<a href="http://www.eecs.berkeley.edu/~efros/">Jianjun Zhao</a>
+			</h2>
+		</center>
+
+
+
+		<center>
+			<h2>
+				<a href="http://ntu.edu.sg/">Nanyang Technological University</a>
+			</h2>
+		</center>
+		<center>
+			<h2>In FES 2019</h2>
+		</center>
+		<center>
+			<h2>
+				<strong><a
+					href="https://www.ntu.edu.sg/home/yi_li/files/fse19.pdf">Paper</a>
+				</strong>
+			</h2>
+		</center>
+		<center>
+			<a
+				href="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/4-Figure5-1.png">
+				<img
+				src="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/3-Figure2-1.png"
+				width="1000">
+			</a>
+		</center>
+		<p></p>
+
+
+		<p>
+		<h2>Abstract</h2>
+
+		<div style="font-size: 14px">
+			<p align="justify">Deep Learning (DL) has achieved tremendous
+				success in many cutting-edge applications. However, the
+				state-of-the-art DL systems still suffer from quality issues. While
+				some recent progress has been made on the analysis of feed-forward
+				DL systems, little study has been done on the Recurrent Neural
+				Network (RNN)-based stateful DL systems, which are widely used in
+				audio, natural languages and video processing, etc. In this paper,
+				we initiate the very first step towards the quantitative analysis of
+				RNN-based DL systems. We model RNN as an abstract state transition
+				system to characterize its internal behaviors. Based on the abstract
+				model, we design two trace similarity metrics and five coverage
+				criteria which enable the quantitative analysis of RNNs. We further
+				propose two algorithms powered by the quantitative measures for
+				adversarial sample detection and coverage-guided test generation. We
+				evaluate DeepStellar on four RNN-based systems covering image
+				classification and automated speech recognition. The results
+				demonstrate that the abstract model is useful in capturing the
+				internal behaviors of RNNs, and confirm that (1) the similarity
+				metrics could effectively capture the differences between samples
+				even with very small perturbations (achieving 97% accuracy for
+				detecting adversarial samples) and (2) the coverage criteria are
+				useful in revealing erroneous behaviors</p>
+		</div>
+
+		<a href="https://arxiv.org/pdf/1703.10593.pdf"><img
+			style="float: left; padding: 10px; PADDING-RIGHT: 30px;"
+			alt="paper thumbnail"
+			src="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/paperthumb.png"
+			width=170></a> <br>
+
+
+		<h2>Paper</h2>
+		<p>
+			<a href="https://dl.acm.org/doi/10.1145/3338906.3338954">FSE 2019</a>,
+			2019.
+		</p>
+
+
+
+		<h2>Citation</h2>
+		<p>
+			Du, Xiaoning, et al. "DeepStellar - model-based quantitative analysis
+			of stateful deep learning systems.." (2019): 477-487. <br>(*
+			indicates equal contributions) <a
+				href="https://dl.acm.org/doi/abs/10.1145/3338906.3338954">Bibtex</a>
+		</p>
+
+
+		<table border="0" cellspacing="0" cellpadding="10" width="100%">
+			<tr>
+				<td align="center" valign="middle" width="50%" class="full">
+					<h2>A Quantitative Analysis Framework for Recurrent Neural
+						Network</h2>
+					<p>
+						<iframe width="560" height="315"
+							src="https://www.youtube.com/embed/xxKptWPngJA" frameborder="0"
+							allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+							allowfullscreen></iframe>
+					</p>
+				</td>
+
+			</tr>
+		</table>
+
+
+
+
+
+		<br>
+		<h1 align='center'>Brief Description of the Method</h1>
+		<center>
+			<img
+				src="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/2-Figure1-1.png"
+				width="600">
+		</center>
+		<br>
+		<p align="justify">
+			Although recent work mentions the possibility to analyze an RNN
+			through direct unrolling, treating it as an FNN (<a
+				href="https://arxiv.org/abs/1808.08444"><span
+				style="font-weight: normal">Jinhan et al., 2019</span></a>), it is still
+			far from sufficient to handle inputs of varied lengths. Different
+			from an FNN, where each layer has a fixed role in feature extraction,
+			a layer in an unrolled RNN often does not preserve the same feature
+			latent space function (or semantics) for different input sequences
+		</p>
+		<p>To better characterize the internal behaviors of RNNs, we
+			propose DeepStellar, a general-purpose quantitative analysis
+			framework for RNN-based DL systems. Considering its stateful nature,
+			we first model an RNN as Discrete-Time Markov Chain (DTMC) to capture
+			its statistical behaviors. The results demonstrate that, (1) the
+			trace similarity metrics serve as good indicators of the
+			discriminatory power of RNNs, and the abstract model is sensitive
+			enough to distinguish inputs generated with very small perturbations;
+			and (2) the coverage criteria derived from the abstract model are
+			able to measure test adequacy and are effective in manifesting
+			erroneous behaviors</p>
+
+
+		<br>
+		<h1 align='center'>STATE TRANSITION MODELING OF RNN</h1>
+		<p align="justify">The number of states and traces enabled while
+			training an RNN can be huge. To effectively capture the behaviors
+			triggered by a large number of input sequences and better capture the
+			global characteristics of the trained network, we introduce an
+			abstract state transition model in this paper.
+		<p>
+			<b>State Abstraction</b>. Each concrete state si is represented as a
+			vector (s1 i ,...,sm i ), usually in high dimension (i.e.,m could be
+			a large number). Intuitively, an abstract state represents a set of
+			concrete states which are close in space. To obtain such a state
+			abstraction, we first apply the Principle Component Analysis (PCA)
+			[26] to perform an orthogonal transformation on the concrete states
+		</p>
+
+		<table border="0" width="1000px" cellpadding="10">
+			<tr>
+				<td width="330px" align="center" valign="top">
+
+					<div style="width: 330px; text-align: left; font-size: 14px">
+						<img
+							src="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/4-Figure4-1.png"
+							width="330px">
+
+						<p align="justify">3 shows a simple FST representing two
+							traces, namely, being the initial state and s3 being the final
+							state. The first trace takes an input sequence x1x2x3 and emits
+							an output sequence y0y1y2; the second trace takes an input
+							sequence x0x  1x2 and emits an output sequence y0y 1y2</p>
+					</div>
+
+				</td>
+				<td width="330px" align="center" valign="top">
+
+
+					<div style="width: 330px; text-align: left; font-size: 14px">
+						<img
+							src="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/3-Figure3-1.png"
+							width="330px">
+						<p align="justify">
+							<br />
+						</p>
+						<p align="justify">
+							<a href="http://qiita.com/itok_msi">itok_msi</a> : A set of
+							concrete traces and their corresponding abstract state transition
+							model
+						</p>
+					</div>
+
+				</td>
+
+			</tr>
+		</table>
+
+
+		</p>
+		<br> <br>
+		<h1 align='center'>Trace Similarity Metrics</h1>
+		<center>
+			<svg xmlns="http://www.w3.org/2000/svg" width="58.541ex"
+				height="8.1ex" role="img" focusable="false"
+				viewBox="0 -2040 25875.1 3580" style="vertical-align: -3.484ex;">
+				<g stroke="currentColor" fill="currentColor" stroke-width="0"
+					transform="matrix(1 0 0 -1 0 0)">
+				<g data-mml-node="math">
+				<g data-mml-node="msub">
+				<g data-mml-node="mi">
+				<path data-c="53"
+					d="M55 507Q55 590 112 647T243 704H257Q342 704 405 641L426 672Q431 679 436 687T446 700L449 704Q450 704 453 704T459 705H463Q466 705 472 699V462L466 456H448Q437 456 435 459T430 479Q413 605 329 646Q292 662 254 662Q201 662 168 626T135 542Q135 508 152 480T200 435Q210 431 286 412T370 389Q427 367 463 314T500 191Q500 110 448 45T301 -21Q245 -21 201 -4T140 27L122 41Q118 36 107 21T87 -7T78 -21Q76 -22 68 -22H64Q61 -22 55 -16V101Q55 220 56 222Q58 227 76 227H89Q95 221 95 214Q95 182 105 151T139 90T205 42T305 24Q352 24 386 62T420 155Q420 198 398 233T340 281Q284 295 266 300Q261 301 239 306T206 314T174 325T141 343T112 367T85 402Q55 451 55 507Z"></path>
+				<path data-c="54"
+					d="M36 443Q37 448 46 558T55 671V677H666V671Q667 666 676 556T685 443V437H645V443Q645 445 642 478T631 544T610 593Q593 614 555 625Q534 630 478 630H451H443Q417 630 414 618Q413 616 413 339V63Q420 53 439 50T528 46H558V0H545L361 3Q186 1 177 0H164V46H194Q264 46 283 49T309 63V339V550Q309 620 304 625T271 630H244H224Q154 630 119 601Q101 585 93 554T81 486T76 443V437H36V443Z"
+					transform="translate(556, 0)"></path>
+				<path data-c="53"
+					d="M55 507Q55 590 112 647T243 704H257Q342 704 405 641L426 672Q431 679 436 687T446 700L449 704Q450 704 453 704T459 705H463Q466 705 472 699V462L466 456H448Q437 456 435 459T430 479Q413 605 329 646Q292 662 254 662Q201 662 168 626T135 542Q135 508 152 480T200 435Q210 431 286 412T370 389Q427 367 463 314T500 191Q500 110 448 45T301 -21Q245 -21 201 -4T140 27L122 41Q118 36 107 21T87 -7T78 -21Q76 -22 68 -22H64Q61 -22 55 -16V101Q55 220 56 222Q58 227 76 227H89Q95 221 95 214Q95 182 105 151T139 90T205 42T305 24Q352 24 386 62T420 155Q420 198 398 233T340 281Q284 295 266 300Q261 301 239 306T206 314T174 325T141 343T112 367T85 402Q55 451 55 507Z"
+					transform="translate(1278, 0)"></path>
+				<path data-c="49"
+					d="M328 0Q307 3 180 3T32 0H21V46H43Q92 46 106 49T126 60Q128 63 128 342Q128 620 126 623Q122 628 118 630T96 635T43 637H21V683H32Q53 680 180 680T328 683H339V637H317Q268 637 254 634T234 623Q232 620 232 342Q232 63 234 60Q238 55 242 53T264 48T317 46H339V0H328Z"
+					transform="translate(1834, 0)"></path>
+				<path data-c="4D"
+					d="M132 622Q125 629 121 631T105 634T62 637H29V683H135Q221 683 232 682T249 675Q250 674 354 398L458 124L562 398Q666 674 668 675Q671 681 683 682T781 683H887V637H854Q814 636 803 634T785 622V61Q791 51 802 49T854 46H887V0H876Q855 3 736 3Q605 3 596 0H585V46H618Q660 47 669 49T688 61V347Q688 424 688 461T688 546T688 613L687 632Q454 14 450 7Q446 1 430 1T410 7Q409 9 292 316L176 624V606Q175 588 175 543T175 463T175 356L176 86Q187 50 261 46H278V0H269Q254 3 154 3Q52 3 37 0H29V46H46Q78 48 98 56T122 69T132 86V622Z"
+					transform="translate(2195, 0)"></path></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(3112, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="4D"
+					d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g></g></g>
+				<g data-mml-node="mo" transform="translate(3905.2, 0)">
+				<path data-c="2061" d=""></path></g>
+				<g data-mml-node="mo" transform="translate(3905.2, 0)">
+				<path data-c="28"
+					d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g>
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD"
+					transform="translate(4294.2, 0)">
+				<g data-mml-node="mi">
+				<path data-c="78"
+					d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(4901.2, 0)">
+				<path data-c="2C"
+					d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g>
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD"
+					transform="translate(5345.8, 0)">
+				<g data-mml-node="mi">
+				<path data-c="79"
+					d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(5952.8, 0)">
+				<path data-c="29"
+					d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g>
+				<g data-mml-node="mo" transform="translate(6619.6, 0)">
+				<path data-c="3D"
+					d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g>
+				<g data-mml-node="mfrac" transform="translate(7675.4, 0)">
+				<g data-mml-node="mrow" transform="translate(220, 988)">
+				<g data-mml-node="mo">
+				<svg width="278" height="1556" y="-528" x="27.5"
+					viewBox="0 -192.7 278 1556">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.336)"></path></svg></g>
+				<g data-mml-node="msub" transform="translate(333, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="53"
+					d="M554 512Q536 512 536 522Q536 525 539 539T542 564Q542 588 528 604Q515 616 482 625T410 635Q374 635 349 624T312 594T295 561T290 532Q290 505 303 482T342 442T378 419T409 404Q435 391 451 383T494 357T535 323T562 282T574 231Q574 133 464 56T220 -22Q138 -22 78 21T18 123Q18 184 61 227T156 274Q178 274 178 263Q178 260 177 258Q172 247 164 239T151 227T136 218L127 213L124 202Q118 186 118 163Q120 124 165 86T292 48Q374 48 423 86T473 186V193Q473 267 347 327Q268 364 239 389Q191 431 191 486Q191 547 242 600T356 679T470 705Q472 705 478 705T489 704Q551 704 596 682T642 610Q642 566 621 545Q592 516 554 512Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(98, 234)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(642, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="78"
+					d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(1676.4, 0)">
+				<path data-c="2229"
+					d="M88 -21T75 -21T55 -7V200Q55 231 55 280Q56 414 60 428Q61 430 61 431Q77 500 152 549T332 598Q443 598 522 544T610 405Q611 399 611 194V-7Q604 -22 591 -22Q582 -22 572 -9L570 405Q563 433 556 449T529 485Q498 519 445 538T334 558Q251 558 179 518T96 401Q95 396 95 193V-7Q88 -21 75 -21Z"></path></g>
+				<g data-mml-node="msub" transform="translate(2565.7, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="53"
+					d="M554 512Q536 512 536 522Q536 525 539 539T542 564Q542 588 528 604Q515 616 482 625T410 635Q374 635 349 624T312 594T295 561T290 532Q290 505 303 482T342 442T378 419T409 404Q435 391 451 383T494 357T535 323T562 282T574 231Q574 133 464 56T220 -22Q138 -22 78 21T18 123Q18 184 61 227T156 274Q178 274 178 263Q178 260 177 258Q172 247 164 239T151 227T136 218L127 213L124 202Q118 186 118 163Q120 124 165 86T292 48Q374 48 423 86T473 186V193Q473 267 347 327Q268 364 239 389Q191 431 191 486Q191 547 242 600T356 679T470 705Q472 705 478 705T489 704Q551 704 596 682T642 610Q642 566 621 545Q592 516 554 512Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(98, 234)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(642, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="79"
+					d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(3686.9, 0)">
+				<svg width="278" height="1556" y="-528" x="27.5"
+					viewBox="0 -192.7 278 1556">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.336)"></path></svg></g></g>
+				<g data-mml-node="mrow" transform="translate(220, -988)">
+				<g data-mml-node="mo">
+				<svg width="278" height="1556" y="-528" x="27.5"
+					viewBox="0 -192.7 278 1556">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.336)"></path></svg></g>
+				<g data-mml-node="msub" transform="translate(333, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="53"
+					d="M554 512Q536 512 536 522Q536 525 539 539T542 564Q542 588 528 604Q515 616 482 625T410 635Q374 635 349 624T312 594T295 561T290 532Q290 505 303 482T342 442T378 419T409 404Q435 391 451 383T494 357T535 323T562 282T574 231Q574 133 464 56T220 -22Q138 -22 78 21T18 123Q18 184 61 227T156 274Q178 274 178 263Q178 260 177 258Q172 247 164 239T151 227T136 218L127 213L124 202Q118 186 118 163Q120 124 165 86T292 48Q374 48 423 86T473 186V193Q473 267 347 327Q268 364 239 389Q191 431 191 486Q191 547 242 600T356 679T470 705Q472 705 478 705T489 704Q551 704 596 682T642 610Q642 566 621 545Q592 516 554 512Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(98, 234)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(642, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="78"
+					d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(1676.4, 0)">
+				<path data-c="222A"
+					d="M591 598H592Q604 598 611 583V376Q611 345 611 296Q610 162 606 148Q605 146 605 145Q586 68 507 23T333 -22Q268 -22 209 -1T106 66T56 173Q55 180 55 384L56 585Q66 598 75 598Q85 598 95 585V378L96 172L98 162Q112 95 181 57T332 18Q415 18 487 58T570 175Q571 180 571 383V583Q579 598 591 598Z"></path></g>
+				<g data-mml-node="msub" transform="translate(2565.7, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="53"
+					d="M554 512Q536 512 536 522Q536 525 539 539T542 564Q542 588 528 604Q515 616 482 625T410 635Q374 635 349 624T312 594T295 561T290 532Q290 505 303 482T342 442T378 419T409 404Q435 391 451 383T494 357T535 323T562 282T574 231Q574 133 464 56T220 -22Q138 -22 78 21T18 123Q18 184 61 227T156 274Q178 274 178 263Q178 260 177 258Q172 247 164 239T151 227T136 218L127 213L124 202Q118 186 118 163Q120 124 165 86T292 48Q374 48 423 86T473 186V193Q473 267 347 327Q268 364 239 389Q191 431 191 486Q191 547 242 600T356 679T470 705Q472 705 478 705T489 704Q551 704 596 682T642 610Q642 566 621 545Q592 516 554 512Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(98, 234)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(642, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="79"
+					d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(3686.9, 0)">
+				<svg width="278" height="1556" y="-528" x="27.5"
+					viewBox="0 -192.7 278 1556">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.336)"></path></svg></g></g>
+				<rect width="4219.9" height="60" x="120" y="220"></rect></g>
+				<g data-mml-node="mo" transform="translate(12135.3, 0)">
+				<path data-c="2C"
+					d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g>
+				<g data-mml-node="mstyle" transform="translate(12579.9, 0)">
+				<g data-mml-node="mspace"></g></g>
+				<g data-mml-node="msub" transform="translate(13746.6, 0)">
+				<g data-mml-node="mi">
+				<path data-c="54"
+					d="M36 443Q37 448 46 558T55 671V677H666V671Q667 666 676 556T685 443V437H645V443Q645 445 642 478T631 544T610 593Q593 614 555 625Q534 630 478 630H451H443Q417 630 414 618Q413 616 413 339V63Q420 53 439 50T528 46H558V0H545L361 3Q186 1 177 0H164V46H194Q264 46 283 49T309 63V339V550Q309 620 304 625T271 630H244H224Q154 630 119 601Q101 585 93 554T81 486T76 443V437H36V443Z"></path>
+				<path data-c="54"
+					d="M36 443Q37 448 46 558T55 671V677H666V671Q667 666 676 556T685 443V437H645V443Q645 445 642 478T631 544T610 593Q593 614 555 625Q534 630 478 630H451H443Q417 630 414 618Q413 616 413 339V63Q420 53 439 50T528 46H558V0H545L361 3Q186 1 177 0H164V46H194Q264 46 283 49T309 63V339V550Q309 620 304 625T271 630H244H224Q154 630 119 601Q101 585 93 554T81 486T76 443V437H36V443Z"
+					transform="translate(722, 0)"></path>
+				<path data-c="53"
+					d="M55 507Q55 590 112 647T243 704H257Q342 704 405 641L426 672Q431 679 436 687T446 700L449 704Q450 704 453 704T459 705H463Q466 705 472 699V462L466 456H448Q437 456 435 459T430 479Q413 605 329 646Q292 662 254 662Q201 662 168 626T135 542Q135 508 152 480T200 435Q210 431 286 412T370 389Q427 367 463 314T500 191Q500 110 448 45T301 -21Q245 -21 201 -4T140 27L122 41Q118 36 107 21T87 -7T78 -21Q76 -22 68 -22H64Q61 -22 55 -16V101Q55 220 56 222Q58 227 76 227H89Q95 221 95 214Q95 182 105 151T139 90T205 42T305 24Q352 24 386 62T420 155Q420 198 398 233T340 281Q284 295 266 300Q261 301 239 306T206 314T174 325T141 343T112 367T85 402Q55 451 55 507Z"
+					transform="translate(1444, 0)"></path>
+				<path data-c="49"
+					d="M328 0Q307 3 180 3T32 0H21V46H43Q92 46 106 49T126 60Q128 63 128 342Q128 620 126 623Q122 628 118 630T96 635T43 637H21V683H32Q53 680 180 680T328 683H339V637H317Q268 637 254 634T234 623Q232 620 232 342Q232 63 234 60Q238 55 242 53T264 48T317 46H339V0H328Z"
+					transform="translate(2000, 0)"></path>
+				<path data-c="4D"
+					d="M132 622Q125 629 121 631T105 634T62 637H29V683H135Q221 683 232 682T249 675Q250 674 354 398L458 124L562 398Q666 674 668 675Q671 681 683 682T781 683H887V637H854Q814 636 803 634T785 622V61Q791 51 802 49T854 46H887V0H876Q855 3 736 3Q605 3 596 0H585V46H618Q660 47 669 49T688 61V347Q688 424 688 461T688 546T688 613L687 632Q454 14 450 7Q446 1 430 1T410 7Q409 9 292 316L176 624V606Q175 588 175 543T175 463T175 356L176 86Q187 50 261 46H278V0H269Q254 3 154 3Q52 3 37 0H29V46H46Q78 48 98 56T122 69T132 86V622Z"
+					transform="translate(2361, 0)"></path></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(3278, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="4D"
+					d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g></g></g>
+				<g data-mml-node="mo" transform="translate(17817.8, 0)">
+				<path data-c="2061" d=""></path></g>
+				<g data-mml-node="mo" transform="translate(17817.8, 0)">
+				<path data-c="28"
+					d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g>
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD"
+					transform="translate(18206.8, 0)">
+				<g data-mml-node="mi">
+				<path data-c="78"
+					d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(18813.8, 0)">
+				<path data-c="2C"
+					d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g>
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD"
+					transform="translate(19258.4, 0)">
+				<g data-mml-node="mi">
+				<path data-c="79"
+					d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g>
+				<g data-mml-node="mo" transform="translate(19865.4, 0)">
+				<path data-c="29"
+					d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g>
+				<g data-mml-node="mo" transform="translate(20532.2, 0)">
+				<path data-c="3D"
+					d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g>
+				<g data-mml-node="mfrac" transform="translate(21588, 0)">
+				<g data-mml-node="mrow" transform="translate(220, 1000)">
+				<g data-mml-node="mo">
+				<svg width="278" height="1580" y="-540" x="27.5"
+					viewBox="0 -195.7 278 1580">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.372)"></path></svg></g>
+				<g data-mml-node="msub" transform="translate(333, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="mi" transform="translate(28, 0)">
+				<path data-c="3B4"
+					d="M195 609Q195 656 227 686T302 717Q319 716 351 709T407 697T433 690Q451 682 451 662Q451 644 438 628T403 612Q382 612 348 641T288 671T249 657T235 628Q235 584 334 463Q401 379 401 292Q401 169 340 80T205 -10H198Q127 -10 83 36T36 153Q36 286 151 382Q191 413 252 434Q252 435 245 449T230 481T214 521T201 566T195 609ZM112 130Q112 83 136 55T204 27Q233 27 256 51T291 111T309 178T316 232Q316 267 309 298T295 344T269 400L259 396Q215 381 183 342T137 256T118 179T112 130Z"></path></g>
+				<g data-mml-node="mo" transform="translate(55.6, 246)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(555.6, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="78"
+					d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(1590, 0)">
+				<path data-c="2229"
+					d="M88 -21T75 -21T55 -7V200Q55 231 55 280Q56 414 60 428Q61 430 61 431Q77 500 152 549T332 598Q443 598 522 544T610 405Q611 399 611 194V-7Q604 -22 591 -22Q582 -22 572 -9L570 405Q563 433 556 449T529 485Q498 519 445 538T334 558Q251 558 179 518T96 401Q95 396 95 193V-7Q88 -21 75 -21Z"></path></g>
+				<g data-mml-node="msub" transform="translate(2479.3, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="mi" transform="translate(28, 0)">
+				<path data-c="3B4"
+					d="M195 609Q195 656 227 686T302 717Q319 716 351 709T407 697T433 690Q451 682 451 662Q451 644 438 628T403 612Q382 612 348 641T288 671T249 657T235 628Q235 584 334 463Q401 379 401 292Q401 169 340 80T205 -10H198Q127 -10 83 36T36 153Q36 286 151 382Q191 413 252 434Q252 435 245 449T230 481T214 521T201 566T195 609ZM112 130Q112 83 136 55T204 27Q233 27 256 51T291 111T309 178T316 232Q316 267 309 298T295 344T269 400L259 396Q215 381 183 342T137 256T118 179T112 130Z"></path></g>
+				<g data-mml-node="mo" transform="translate(55.6, 246)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(555.6, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="79"
+					d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(3514.1, 0)">
+				<svg width="278" height="1580" y="-540" x="27.5"
+					viewBox="0 -195.7 278 1580">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.372)"></path></svg></g></g>
+				<g data-mml-node="mrow" transform="translate(220, -1000)">
+				<g data-mml-node="mo">
+				<svg width="278" height="1580" y="-540" x="27.5"
+					viewBox="0 -195.7 278 1580">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.372)"></path></svg></g>
+				<g data-mml-node="msub" transform="translate(333, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="mi" transform="translate(28, 0)">
+				<path data-c="3B4"
+					d="M195 609Q195 656 227 686T302 717Q319 716 351 709T407 697T433 690Q451 682 451 662Q451 644 438 628T403 612Q382 612 348 641T288 671T249 657T235 628Q235 584 334 463Q401 379 401 292Q401 169 340 80T205 -10H198Q127 -10 83 36T36 153Q36 286 151 382Q191 413 252 434Q252 435 245 449T230 481T214 521T201 566T195 609ZM112 130Q112 83 136 55T204 27Q233 27 256 51T291 111T309 178T316 232Q316 267 309 298T295 344T269 400L259 396Q215 381 183 342T137 256T118 179T112 130Z"></path></g>
+				<g data-mml-node="mo" transform="translate(55.6, 246)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(555.6, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="78"
+					d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(1590, 0)">
+				<path data-c="222A"
+					d="M591 598H592Q604 598 611 583V376Q611 345 611 296Q610 162 606 148Q605 146 605 145Q586 68 507 23T333 -22Q268 -22 209 -1T106 66T56 173Q55 180 55 384L56 585Q66 598 75 598Q85 598 95 585V378L96 172L98 162Q112 95 181 57T332 18Q415 18 487 58T570 175Q571 180 571 383V583Q579 598 591 598Z"></path></g>
+				<g data-mml-node="msub" transform="translate(2479.3, 0)">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mover">
+				<g data-mml-node="mi" transform="translate(28, 0)">
+				<path data-c="3B4"
+					d="M195 609Q195 656 227 686T302 717Q319 716 351 709T407 697T433 690Q451 682 451 662Q451 644 438 628T403 612Q382 612 348 641T288 671T249 657T235 628Q235 584 334 463Q401 379 401 292Q401 169 340 80T205 -10H198Q127 -10 83 36T36 153Q36 286 151 382Q191 413 252 434Q252 435 245 449T230 481T214 521T201 566T195 609ZM112 130Q112 83 136 55T204 27Q233 27 256 51T291 111T309 178T316 232Q316 267 309 298T295 344T269 400L259 396Q215 381 183 342T137 256T118 179T112 130Z"></path></g>
+				<g data-mml-node="mo" transform="translate(55.6, 246)">
+				<path data-c="5E"
+					d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path></g></g></g>
+				<g data-mml-node="TeXAtom"
+					transform="translate(555.6, -150) scale(0.707)"
+					data-mjx-texclass="ORD">
+				<g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+				<g data-mml-node="mi">
+				<path data-c="79"
+					d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g></g></g>
+				<g data-mml-node="mo" transform="translate(3514.1, 0)">
+				<svg width="278" height="1580" y="-540" x="27.5"
+					viewBox="0 -195.7 278 1580">
+					<path data-c="2223"
+						d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"
+						transform="scale(1, 2.372)"></path></svg></g></g>
+				<rect width="4047.1" height="60" x="120" y="220"></rect></g></g></g></svg>
+		</center>
+		<p align="justify">To precisely compare two input sequences, we
+			define the trace similarity metrics to quantify the proximity of
+			their induced state transitions on the abstract model.</p>
+		<p>Fig. a ("this book is about science") and Fig. b ("this book is
+			about literature"). The darker dots appear earlier in the sequence,
+			and vice versa. We can see a clear difference of the two at later
+			parts of the sequence. The two concrete traces are then projected
+			onto the 3-dimensional space under the PCA-3 abstraction with 5
+			intervals on each dimension, to calculate the trace similarities.</p>
+		</p>
+		<br>
+
+
+
+		<table border="0" width="1000px" cellpadding="10">
+			<tr>
+				<td width="330px" align="center" valign="top">
+
+					<div style="width: 330px; text-align: left; font-size: 14px">
+						<img
+							src="https://123publicdata.s3-ap-southeast-1.amazonaws.com/deepstellar/4-Figure5-1.png"
+							width="330px">
+
+						<p align="justify">Visualization of concrete traces of two
+							audio over an RNN-based ASR model with the PCA-3 abstraction</p>
+					</div>
+
+				</td>
+
+
+			</tr>
+		</table>
+
+		<h1 align='center'>Code and Trained Models</h1>
+		<p align="justify">
+			Please visit our <a href="https://github.com/NVlabs/SPADE">github
+				repo</a>.
+		</p>
+
+		<br>
+
+
+		<h1>Acknowledgement</h1>
+		<p align="justify">This research was supported (in part) by the
+			National Research Foundation, Prime Ministers Office, Singapore under
+			its National Cybersecurity R&D Program (Award No. NRF2018NCR-NCR005-
+			0001), National Satellite of Excellence in Trustworthy Software
+			System (Award No. NRF2018NCR-NSOE003-0001) administered by the
+			National Cybersecurity R&D Directorate, and JSPS KAKENHI Grant
+			19H04086, and NTU research grant NGF-2019-06-024</p>
+
+		<br>
+		<h1>Related Work</h1>
+
+		<ul id='relatedwork'>
+			<div align="left">
+				<li font-size: 15px>V. Dumoulin, J. Shlens, and M. Kudlur. <a
+					href="https://arxiv.org/abs/1610.07629"><strong>"A
+							learned representation for artistic style"</strong></a>, in ICLR 2016.
+				</li>
+				<li font-size: 15px>H. De Vries, F. Strub, J. Mary, H.
+					Larochelle, O. Pietquin, and A. C. Courville. <a
+					href="https://arxiv.org/abs/1707.00683"><strong>"Modulating
+							early visual processing by language"</strong></a>, in NeurIPS 2017.
+				</li>
+				<li font-size: 15px>T. Wang, M. Liu, J. Zhu, A. Tao, J. Kautz,
+					and B. Catanzaro. <a href="https://tcwang0509.github.io/pix2pixHD/"><strong>"High-Resolution
+							Image Synthesis and Semantic Manipulation with Conditional GANs"</strong></a>,
+					in CVPR 2018. (pix2pixHD)
+				</li>
+				<li font-size: 15px>P. Isola, J. Zhu, T. Zhou, and A. A. Efros.
+					<a href="https://phillipi.github.io/pix2pix/"><strong>"Image-to-Image
+							Translation with Conditional Adversarial Networks"</strong></a>, in CVPR 2017.
+					(pix2pix)
+				</li>
+				<li font-size: 15px>Q. Chen and V. Koltun. <a
+					href="https://cqf.io/ImageSynthesis/"><strong>"Photographic
+							image synthesis with cascaded refinement networks.</strong></a>, ICCV 2017.
+					(CRN)
+				</li>
+			</div>
+		</ul>
+
