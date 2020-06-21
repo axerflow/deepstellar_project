@@ -5,4 +5,6 @@
             iFrameID.height = "";
             iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
       }   
+    console.log(iFrameID)
   }
+
